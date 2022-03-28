@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -38,6 +39,9 @@ class Comment(models.Model):
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
 
+    def __str__(self):
+        return self.text
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -48,7 +52,7 @@ class Follow(models.Model):
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following'
+        related_name='following',
     )
 
     class Meta():
@@ -58,3 +62,10 @@ class Follow(models.Model):
                 name='unique_following'
             ),
         ]
+
+    def __str__(self):
+        return self.text
+
+    def cleane(self):
+        if self.user == self.following:
+            raise ValidationError(message='Нельзя подписаться на себя')

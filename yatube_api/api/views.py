@@ -16,6 +16,11 @@ class CreateMixin(mixins.CreateModelMixin, viewsets.GenericViewSet):
         serializer.save(author=self.request.user)
 
 
+class FollowMixin(mixins.CreateModelMixin, mixins.ListModelMixin,
+                  viewsets.GenericViewSet):
+    pass
+
+
 class PostViewSet(CreateMixin, viewsets.ModelViewSet):
     permission_classes = [AuthorOrReadOnly]
     queryset = Post.objects.all()
@@ -38,7 +43,7 @@ class CommentViewSet(CreateMixin, viewsets.ModelViewSet):
         return post.comments.all()
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(FollowMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = FollowSerializer
     filter_backends = (SearchFilter,)
