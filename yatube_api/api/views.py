@@ -5,7 +5,7 @@ from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
 from rest_framework.filters import SearchFilter
 
-from posts.models import Post, Group, Follow
+from posts.models import Post, Group
 from .permissions import AuthorOrReadOnly
 from .serializers import (FollowSerializer, PostSerializer,
                           GroupSerializer, CommentSerializer)
@@ -53,4 +53,4 @@ class FollowViewSet(FollowMixin):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Follow.objects.filter(user=self.request.user)
+        return self.request.user.user.all()

@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -61,11 +60,11 @@ class Follow(models.Model):
                 fields=['user', 'following'],
                 name='unique_following'
             ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('following)')),
+                name='self_following'
+            ),
         ]
 
     def __str__(self):
         return self.text
-
-    def cleane(self):
-        if self.user == self.following:
-            raise ValidationError(message='Нельзя подписаться на себя')
